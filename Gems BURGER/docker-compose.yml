@@ -1,0 +1,32 @@
+
+version: "3.8"
+services:
+  mongo:
+    image: mongo:6
+    container_name: gems_mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+  backend:
+    build: ./backend
+    container_name: gems_backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      BOT_TOKEN: "TOKEN"
+      MONGO_URL: "mongodb://mongo:27017/gemsburger"
+    depends_on:
+      - mongo
+  frontend:
+    build: ./frontend
+    container_name: gems_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+volumes:
+  mongo_data:
